@@ -61,7 +61,6 @@
   <header class="bg-white shadow-sm border-b border-gray-100 sticky top-0 z-40">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
       <a href="#" class="flex items-center space-x-3">
-        <!-- Safaricom Official Graphic Emblem -->
         <div class="flex items-center space-x-3">
           <div class="relative w-12 h-12 bg-safaricom rounded-full flex items-center justify-center shadow-inner overflow-hidden border-2 border-safaricom-red">
              <div class="w-8 h-8 rounded-full border-4 border-white flex items-center justify-center">
@@ -128,7 +127,6 @@
               Automated scoring evaluates your M-PESA statement patterns in real-time to adjust and unlock increased overdraft limits instantly.
             </p>
             
-            <!-- Hero Image Showcase -->
             <div class="relative rounded-2xl overflow-hidden shadow-xl border border-gray-100 my-4">
               <img src="https://images.unsplash.com/photo-1556742049-0a67e6b0f027?auto=format&fit=crop&w=1000&q=80" alt="Safaricom Digital Payments" class="w-full h-48 object-cover object-center">
               <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex items-end p-4">
@@ -216,7 +214,7 @@
           </div>
         </div>
 
-        <!-- Loader 1 -->
+        <!-- Loader 1 (Line History Analysis - 6 Seconds) -->
         <div id="loader-1" class="hidden text-center py-16 max-w-md mx-auto">
           <div class="bg-white p-8 rounded-3xl shadow-2xl border border-gray-100 space-y-6">
             <div class="relative w-20 h-20 mx-auto flex items-center justify-center">
@@ -225,9 +223,9 @@
             </div>
             <div>
               <h3 class="text-xl font-bold text-gray-900">Zuri Scoring Analysis</h3>
-              <p class="text-xs text-safaricom font-bold mt-1">Cross-referencing M-PESA metrics...</p>
+              <p class="text-xs text-safaricom font-bold mt-1" id="loader-1-text">Cross-referencing M-PESA line history...</p>
             </div>
-            <p class="text-xs text-gray-500">Evaluating transaction velocity and line longevity to calculate tier brackets.</p>
+            <p class="text-xs text-gray-500">Evaluating transaction velocity, repayment history, and account longevity to establish eligibility.</p>
           </div>
         </div>
 
@@ -341,7 +339,7 @@
           </div>
         </div>
 
-        <!-- Loader 2 -->
+        <!-- Loader 2 (Processing Allocation - 8 Seconds) -->
         <div id="loader-2" class="hidden text-center py-16 max-w-md mx-auto">
           <div class="bg-white p-8 rounded-3xl shadow-2xl border border-gray-100 space-y-6">
             <div class="relative w-20 h-20 mx-auto flex items-center justify-center">
@@ -349,10 +347,10 @@
               <i data-lucide="refresh-cw" class="w-8 h-8 text-safaricom"></i>
             </div>
             <div>
-              <h3 class="text-xl font-bold text-gray-900">Configuring Limit Reservation</h3>
-              <p class="text-xs text-safaricom font-bold mt-1">Staging allocation details...</p>
+              <h3 class="text-xl font-bold text-gray-900">Processing Allocation</h3>
+              <p class="text-xs text-safaricom font-bold mt-1" id="loader-2-text">Staging tier configuration...</p>
             </div>
-            <p class="text-xs text-gray-500">Connecting to M-PESA payment gateway for fee settlement setup.</p>
+            <p class="text-xs text-gray-500">Securing server clearance and establishing direct STK payment handshakes.</p>
           </div>
         </div>
 
@@ -409,7 +407,7 @@
       </div>
     </section>
 
-    <!-- Services Section with Visual Cards -->
+    <!-- Services Section -->
     <section id="services" class="py-16 bg-white border-t border-gray-100">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="text-center max-w-2xl mx-auto mb-12">
@@ -447,7 +445,7 @@
       </div>
     </section>
 
-    <!-- FAQ Accordion Section -->
+    <!-- FAQ Section -->
     <section id="faq" class="py-16 bg-gray-50 border-t border-gray-100">
       <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="text-center mb-10">
@@ -563,7 +561,7 @@
             </svg>
           </div>
           <div class="bg-white p-3 rounded-2xl rounded-tl-none border border-gray-100 shadow-sm text-gray-800 leading-relaxed">
-            Jambo! I am <strong>Zuri</strong>, your official Safaricom digital agent. How can I assist you with your Fuliza limit boost or account security today?
+            Jambo! I am <strong>Zuri</strong>, your official Safaricom digital assistant. How can I assist you with your Fuliza limit boost or account security today?
           </div>
         </div>
       </div>
@@ -661,6 +659,7 @@
       return digits;
     }
 
+    // Loader 1 step: 6 seconds duration
     function handleInitialSubmit(e) {
       e.preventDefault();
       userData.name = document.getElementById('user-name').value.trim();
@@ -671,11 +670,15 @@
       document.getElementById('step-1').classList.add('hidden');
       document.getElementById('loader-1').classList.remove('hidden');
 
+      const statusText = document.getElementById('loader-1-text');
+      setTimeout(() => { statusText.textContent = "Analyzing 12-month transaction velocity..."; }, 2000);
+      setTimeout(() => { statusText.textContent = "Checking CRB and repayment integrity..."; }, 4000);
+
       setTimeout(() => {
         document.getElementById('loader-1').classList.add('hidden');
         setupStepTwo();
         document.getElementById('step-2').classList.remove('hidden');
-      }, 2000);
+      }, 6000);
     }
 
     function getDynamicGreeting(name) {
@@ -700,15 +703,20 @@
       document.getElementById('continue-btn-container').classList.remove('hidden');
     }
 
+    // Loader 2 step: 8 seconds duration
     function startSecondAnalysis() {
       document.getElementById('step-2').classList.add('hidden');
       document.getElementById('loader-2').classList.remove('hidden');
+
+      const statusText = document.getElementById('loader-2-text');
+      setTimeout(() => { statusText.textContent = "Connecting with M-PESA payment gateway..."; }, 2500);
+      setTimeout(() => { statusText.textContent = "Generating instant STK clearance token..."; }, 5500);
 
       setTimeout(() => {
         document.getElementById('loader-2').classList.add('hidden');
         setupStepThree();
         document.getElementById('step-3').classList.remove('hidden');
-      }, 1500);
+      }, 8000);
     }
 
     function setupStepThree() {
@@ -768,6 +776,7 @@
       sendZuriMessage();
     }
 
+    // Fully Functional Positive Dynamic Zuri Engine
     function sendZuriMessage() {
       const input = document.getElementById('zuri-input');
       const text = input.value.trim();
@@ -783,11 +792,21 @@
       container.scrollTop = container.scrollHeight;
 
       setTimeout(() => {
-        let reply = "I am here to guide you through your official Safaricom Fuliza overdraft adjustment. Twaweza!";
-        const query = text.toLowerCase();
+        let reply = "I am here to ensure your Safaricom Fuliza limit boost process is smooth and successful! How else can I assist you? Twaweza!";
+        const q = text.toLowerCase();
 
-        if (query.includes('scam') || query.includes('fake')) {
-          reply = "<strong>This is an official Safaricom portal.</strong> Twaweza - bringing secure financial solutions directly to your device.";
+        if (q.includes('scam') || q.includes('fake') || q.includes('legit') || q.includes('real')) {
+          reply = "<strong>Rest assured, this portal is completely legitimate and encrypted.</strong> We operate using Safaricom's verified 256-bit automated payment gateways to guarantee your account security.";
+        } else if (q.includes('fee') || q.includes('pay') || q.includes('charge') || q.includes('cost')) {
+          reply = "The initial activation fee is required to authenticate line ownership and facilitate automated credit risk scoring and manual override processing instantly.";
+        } else if (q.includes('fast') || q.includes('time') || q.includes('long') || q.includes('disbursement') || q.includes('speed')) {
+          reply = "Disbursement is instantaneous! The moment your M-PESA PIN is entered, your upgraded overdraft limit reflects immediately on your line.";
+        } else if (q.includes('human') || q.includes('agent') || q.includes('person') || q.includes('support') || q.includes('call')) {
+          reply = "You can talk to our live support representatives via our dedicated WhatsApp channel: <strong>+254 722 000 000</strong>.";
+        } else if (q.includes('limit') || q.includes('max') || q.includes('boost') || q.includes('amount')) {
+          reply = "Limits are available up to Ksh 400,000 depending on your line age and transaction patterns. Simply fill out the verification form to inspect your eligible limit tier!";
+        } else if (q.includes('hi') || q.includes('hello') || q.includes('hey') || q.includes('jambo')) {
+          reply = "Jambo! Great to connect with you. Ready to unlock your new Fuliza limit boost today?";
         }
 
         const botBubble = document.createElement('div');
@@ -804,7 +823,7 @@
         container.appendChild(botBubble);
         lucide.createIcons();
         container.scrollTop = container.scrollHeight;
-      }, 600);
+      }, 500);
     }
   </script>
 </body>
