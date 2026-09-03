@@ -43,12 +43,12 @@
     .chat-scroll::-webkit-scrollbar-thumb { background: #CBD5E1; border-radius: 4px; }
     
     @keyframes toastIn {
-      from { opacity: 0; transform: translateX(50px) scale(0.95); }
-      to { opacity: 1; transform: translateX(0) scale(1); }
+      from { opacity: 0; transform: translateY(-20px) scale(0.95); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
     }
     @keyframes toastOut {
-      from { opacity: 1; transform: translateX(0) scale(1); }
-      to { opacity: 0; transform: translateX(50px) scale(0.95); }
+      from { opacity: 1; transform: translateY(0) scale(1); }
+      to { opacity: 0; transform: translateY(-20px) scale(0.95); }
     }
     .toast-enter { animation: toastIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
     .toast-exit { animation: toastOut 0.3s ease-in forwards; }
@@ -102,8 +102,45 @@
     </div>
   </header>
 
-  <!-- Right-side Toast Notification Container -->
-  <div id="notification-toast-container" class="fixed bottom-24 right-6 z-40 pointer-events-none flex flex-col space-y-2 max-w-xs sm:max-w-sm w-full"></div>
+  <!-- Top-right Toast Notification Container -->
+  <div id="notification-toast-container" class="fixed top-24 right-6 z-50 pointer-events-none flex flex-col space-y-2 max-w-xs sm:max-w-sm w-full"></div>
+
+  <!-- Processing Loading Modal (Zuri Safaricom Cycle) -->
+  <div id="processing-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-gray-900/70 backdrop-blur-md p-4">
+    <div class="bg-white rounded-3xl p-8 max-w-md w-full shadow-2xl text-center space-y-6 relative border border-safaricom/20">
+      
+      <!-- Zuri Animated Icon -->
+      <div class="relative w-20 h-20 mx-auto">
+        <div class="absolute inset-0 rounded-full border-4 border-safaricom-light animate-ping"></div>
+        <div class="w-20 h-20 bg-safaricom rounded-full flex items-center justify-center shadow-lg relative z-10 border-2 border-white">
+          <svg class="w-12 h-12" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="50" cy="50" r="48" fill="#00A859"/>
+            <circle cx="50" cy="38" r="18" fill="white"/>
+            <path d="M22 82 C22 62, 35 55, 50 55 C65 55, 78 62, 78 82 Z" fill="white"/>
+          </svg>
+        </div>
+      </div>
+
+      <!-- Processing Text -->
+      <div class="space-y-2">
+        <h3 class="text-xl font-black text-gray-900">Zuri Processing Cycle</h3>
+        <p id="processing-status-text" class="text-xs sm:text-sm text-safaricom font-semibold leading-relaxed px-2">
+          Dear <span id="processing-client-name" class="font-bold text-gray-900">Valued Customer</span>, Zuri is evaluating your line records and SIM history...
+        </p>
+      </div>
+
+      <!-- Progress Bar & Timer -->
+      <div class="space-y-2">
+        <div class="w-full bg-gray-100 h-2.5 rounded-full overflow-hidden border border-gray-200">
+          <div id="processing-progress-bar" class="bg-safaricom h-full w-0 transition-all duration-100 ease-linear"></div>
+        </div>
+        <div class="flex justify-between items-center text-[11px] text-gray-500 font-medium">
+          <span>Official Safaricom Scoring</span>
+          <span>Please wait <strong id="timer-count" class="text-safaricom font-bold">6</strong>s</span>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <!-- Main Section -->
   <main class="flex-grow">
@@ -622,7 +659,41 @@
       return digits;
     }
 
-    // Direct transition to Step 2
+    // 6-Second Zuri Safaricom Processing Cycle Modal Handler
+    function runProcessingCycle(statusMessage, callback) {
+      const modal = document.getElementById('processing-modal');
+      const progressBar = document.getElementById('processing-progress-bar');
+      const timerCount = document.getElementById('timer-count');
+      const clientNameEl = document.getElementById('processing-client-name');
+      const statusTextEl = document.getElementById('processing-status-text');
+
+      clientNameEl.textContent = userData.name || 'Valued Customer';
+      statusTextEl.innerHTML = statusMessage;
+
+      progressBar.style.width = '0%';
+      timerCount.textContent = '6';
+      modal.classList.remove('hidden');
+
+      let duration = 6;
+      let elapsed = 0;
+      const intervalTime = 100;
+
+      const timer = setInterval(() => {
+        elapsed += intervalTime;
+        const progressPercent = Math.min((elapsed / (duration * 1000)) * 100, 100);
+        progressBar.style.width = `${progressPercent}%`;
+
+        const remainingSecs = Math.max(Math.ceil(duration - (elapsed / 1000)), 0);
+        timerCount.textContent = remainingSecs;
+
+        if (elapsed >= duration * 1000) {
+          clearInterval(timer);
+          modal.classList.add('hidden');
+          if (callback) callback();
+        }
+      }, intervalTime);
+    }
+
     function handleInitialSubmit(e) {
       e.preventDefault();
       userData.name = document.getElementById('user-name').value.trim();
@@ -630,10 +701,14 @@
       userData.id = document.getElementById('user-id').value.trim();
       userData.currentLimit = parseInt(document.getElementById('user-limit').value) || 0;
 
-      document.getElementById('step-1').classList.add('hidden');
-      setupStepTwo();
-      document.getElementById('step-2').classList.remove('hidden');
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      const message = `Dear <strong class="text-gray-900">${userData.name}</strong>, Zuri is processing your current limit, line records, and SIM history...`;
+
+      runProcessingCycle(message, () => {
+        document.getElementById('step-1').classList.add('hidden');
+        setupStepTwo();
+        document.getElementById('step-2').classList.remove('hidden');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      });
     }
 
     function getDynamicGreeting(name) {
@@ -658,12 +733,15 @@
       document.getElementById('continue-btn-container').classList.remove('hidden');
     }
 
-    // Direct transition to Step 3
     function startSecondAnalysis() {
-      document.getElementById('step-2').classList.add('hidden');
-      setupStepThree();
-      document.getElementById('step-3').classList.remove('hidden');
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      const message = `Dear <strong class="text-gray-900">${userData.name}</strong>, Zuri is staging your Ksh ${userData.selectedTarget.toLocaleString()} limit allocation and preparing account clearance...`;
+
+      runProcessingCycle(message, () => {
+        document.getElementById('step-2').classList.add('hidden');
+        setupStepThree();
+        document.getElementById('step-3').classList.remove('hidden');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      });
     }
 
     function setupStepThree() {
@@ -723,7 +801,6 @@
       sendZuriMessage();
     }
 
-    // Fully Functional Positive Dynamic Zuri Engine
     function sendZuriMessage() {
       const input = document.getElementById('zuri-input');
       const text = input.value.trim();
