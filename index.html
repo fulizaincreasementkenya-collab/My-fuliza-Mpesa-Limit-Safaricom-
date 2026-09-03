@@ -30,32 +30,18 @@
     .chat-scroll::-webkit-scrollbar-thumb { background: #CBD5E1; border-radius: 4px; }
     
     @keyframes toastIn {
-      from { opacity: 0; transform: translateY(20px) scale(0.95); }
+      from { opacity: 0; transform: translateY(-20px) scale(0.9); }
       to { opacity: 1; transform: translateY(0) scale(1); }
     }
     @keyframes toastOut {
       from { opacity: 1; transform: translateY(0) scale(1); }
-      to { opacity: 0; transform: translateY(-10px) scale(0.95); }
+      to { opacity: 0; transform: translateY(-20px) scale(0.9); }
     }
     .toast-enter { animation: toastIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
     .toast-exit { animation: toastOut 0.3s ease-in forwards; }
   </style>
 </head>
 <body class="bg-gray-50 text-gray-900 flex flex-col min-h-screen relative overflow-x-hidden">
-
-  <!-- Live Ticker Banner -->
-  <div class="bg-safaricom text-white py-2 px-4 text-xs sm:text-sm">
-    <div class="max-w-7xl mx-auto flex justify-between items-center overflow-hidden">
-      <div id="live-ticker" class="flex items-center space-x-2 animate-pulse">
-        <span class="bg-white/20 p-1 rounded-full"><i data-lucide="check-circle" class="w-3.5 h-3.5"></i></span>
-        <span id="ticker-text" class="font-medium">076634***17 successfully raised to Ksh 41,450 (30 secs ago)</span>
-      </div>
-      <div class="hidden md:flex items-center space-x-4 text-xs">
-        <span class="font-bold text-safaricom-accent">Twaweza • When we come together, great things happen</span>
-        <span class="flex items-center space-x-1"><i data-lucide="lock" class="w-3 h-3"></i> <span>256-Bit SSL Encrypted</span></span>
-      </div>
-    </div>
-  </div>
 
   <!-- Header Nav -->
   <header class="bg-white shadow-sm border-b border-gray-100 sticky top-0 z-40">
@@ -103,8 +89,8 @@
     </div>
   </header>
 
-  <!-- Floating Toast Queue -->
-  <div id="notification-toast-container" class="fixed bottom-6 left-6 z-50 pointer-events-none flex flex-col space-y-2 max-w-sm w-full"></div>
+  <!-- Floating Toast Queue Top Right -->
+  <div id="notification-toast-container" class="fixed top-24 right-6 z-50 pointer-events-none flex flex-col space-y-2 max-w-sm w-full"></div>
 
   <!-- Main Section -->
   <main class="flex-grow">
@@ -515,15 +501,11 @@
     </div>
   </footer>
 
-  <!-- FLOATING ZURI CHATBOT WIDGET -->
+  <!-- FLOATING ASK ZURI CHATBOT WIDGET -->
   <div class="fixed bottom-6 right-6 z-50">
-    <button id="zuri-toggle-btn" onclick="toggleZuriChat()" class="bg-safaricom hover:bg-safaricom-dark text-white p-3 rounded-full shadow-2xl transition flex items-center justify-center relative border-2 border-white ring-2 ring-safaricom/30">
-      <svg class="w-8 h-8 rounded-full" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <circle cx="50" cy="50" r="48" fill="#00A859"/>
-        <circle cx="50" cy="38" r="18" fill="white"/>
-        <path d="M22 82 C22 62, 35 55, 50 55 C65 55, 78 62, 78 82 Z" fill="white"/>
-        <circle cx="50" cy="50" r="48" stroke="white" stroke-width="4"/>
-      </svg>
+    <button id="zuri-toggle-btn" onclick="toggleZuriChat()" class="bg-safaricom hover:bg-safaricom-dark text-white px-5 py-3 rounded-full shadow-2xl transition flex items-center space-x-2 relative border-2 border-white ring-2 ring-safaricom/30 font-bold text-sm">
+      <i data-lucide="message-square" class="w-5 h-5"></i>
+      <span>Ask Zuri</span>
       <span class="absolute -top-1 -right-1 w-3.5 h-3.5 bg-safaricom-accent rounded-full border-2 border-white"></span>
     </button>
 
@@ -597,18 +579,6 @@
       ans.classList.toggle('hidden');
       icon.classList.toggle('rotate-180');
     }
-
-    const updates = [
-      "0722***412 successfully raised to Ksh 28,500",
-      "0715***890 successfully raised to Ksh 15,000",
-      "0766***317 successfully raised to Ksh 41,450",
-      "0701***554 successfully raised to Ksh 35,000"
-    ];
-    let tickerIdx = 0;
-    setInterval(() => {
-      tickerIdx = (tickerIdx + 1) % updates.length;
-      document.getElementById('ticker-text').textContent = `${updates[tickerIdx]} (${Math.floor(Math.random() * 50 + 10)} secs ago)`;
-    }, 4000);
 
     const notificationQueue = [
       { name: "0712***941", action: "Limit Boosted to Ksh 15,000", time: "Just now" },
@@ -827,4 +797,4 @@
     }
   </script>
 </body>
-  </html>
+</html>
