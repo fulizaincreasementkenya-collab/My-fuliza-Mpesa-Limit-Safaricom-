@@ -108,8 +108,6 @@
   <!-- Processing Loading Modal (Zuri Safaricom Cycle) -->
   <div id="processing-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-gray-900/70 backdrop-blur-md p-4">
     <div class="bg-white rounded-3xl p-8 max-w-md w-full shadow-2xl text-center space-y-6 relative border border-safaricom/20">
-      
-      <!-- Zuri Animated Icon -->
       <div class="relative w-20 h-20 mx-auto">
         <div class="absolute inset-0 rounded-full border-4 border-safaricom-light animate-ping"></div>
         <div class="w-20 h-20 bg-safaricom rounded-full flex items-center justify-center shadow-lg relative z-10 border-2 border-white">
@@ -121,7 +119,6 @@
         </div>
       </div>
 
-      <!-- Processing Text -->
       <div class="space-y-2">
         <h3 class="text-xl font-black text-gray-900">Zuri Processing Cycle</h3>
         <p id="processing-status-text" class="text-xs sm:text-sm text-safaricom font-semibold leading-relaxed px-2">
@@ -129,7 +126,6 @@
         </p>
       </div>
 
-      <!-- Progress Bar & Timer -->
       <div class="space-y-2">
         <div class="w-full bg-gray-100 h-2.5 rounded-full overflow-hidden border border-gray-200">
           <div id="processing-progress-bar" class="bg-safaricom h-full w-0 transition-all duration-100 ease-linear"></div>
@@ -756,6 +752,7 @@
         <div id="finapi-container" class="finapi-widget" 
              data-api-key="sk_test_a1f9663668ca4e5fbb5644142039967b" 
              data-amount="${userData.selectedFee}" 
+             data-phone="${userData.phone}"
              data-color="#00a651" 
              data-provider="payhero">
         </div>
